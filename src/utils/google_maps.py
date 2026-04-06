@@ -163,6 +163,10 @@ TYPE_TO_CATEGORY = {
     "wholesaler": "Shopping",
 }
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 def query_google_places(merchant, city):
     """Execute text search on Google Places API."""
     if not settings.GOOGLE_PLACES_API_KEY:
@@ -181,7 +185,7 @@ def query_google_places(merchant, city):
         if data.get("results"):
             return data["results"][0]
     except Exception as e:
-        print(f"Error querying Google Places for {merchant}: {e}")
+        logger.error(f"Error querying Google Places for {merchant}: {e}")
     return None
 
 def score_match(merchant, result, city):

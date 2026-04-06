@@ -1,6 +1,16 @@
-import pandas as pd
 import os
+import sys
+import logging
+import pandas as pd
+
+# Ensure the root directory is in the path if run directly
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
+
 from config import settings
+
+logger = logging.getLogger(__name__)
 
 def clean_transaction_data(df):
     """Apply cleaning transformations to transaction data."""
@@ -31,14 +41,17 @@ def run_clean_flow():
     output_file = os.path.join(settings.PROCESSED_DATA_PATH, "transactions_cleaned.csv")
 
     if not os.path.exists(input_file):
-        print(f"Input file not found: {input_file}")
+        logger.error(f"Input file not found: {input_file}")
         return
 
+    logger.info(f"Loading data from {input_file}")
     df = pd.read_csv(input_file, parse_dates=["timestamp"])
     df_cleaned = clean_transaction_data(df)
     
     df_cleaned.to_csv(output_file, index=False)
-    print(f"Saved cleaned data to {output_file} with {len(df_cleaned)} rows.")
+    logger.info(f"Saved cleaned data to {output_file} with {len(df_cleaned)} rows.")
 
 if __name__ == "__main__":
+    from config.settings import setup_logging
+    setup_logging()
     run_clean_flow()

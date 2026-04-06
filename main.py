@@ -5,9 +5,13 @@ import os
 # Ensure the root directory is in the path for modular imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+from config.settings import setup_logging
 from scripts.run_parse import run_parse_flow
 from scripts.run_clean import run_clean_flow
 from scripts.run_analyze import run_enrichment_flow
+
+# Initialize logging
+setup_logging()
 
 def main():
     parser = argparse.ArgumentParser(description="payParse - Data Processing Pipeline")

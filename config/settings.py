@@ -1,4 +1,5 @@
 import os
+import logging
 from dotenv import load_dotenv
 
 # Load environment variables from .env if present
@@ -15,3 +16,14 @@ CONFIDENCE_THRESHOLD = int(os.getenv("CONFIDENCE_THRESHOLD", 70))
 RAW_DATA_PATH = "data/raw"
 PROCESSED_DATA_PATH = "data/processed"
 CACHE_PATH = "data/cache/merchant_cache.csv"
+
+# Logging configuration
+def setup_logging():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.FileHandler("app.log"),
+            logging.StreamHandler()
+        ]
+    )

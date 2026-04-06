@@ -1,13 +1,23 @@
+import os
+import sys
+import logging
 from bs4 import BeautifulSoup
 import pandas as pd
-import os
+
+# Ensure the root directory is in the path if run directly
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
+
 from config import settings
 from src.utils.cleaning import normalize_timestamp, extract_merchant_and_type, parse_amount
+
+logger = logging.getLogger(__name__)
 
 def parse_activity_html(file_path):
     """Main parsing function to convert Google Activity HTML to DataFrame."""
     if not os.path.exists(file_path):
-        print(f"File not found: {file_path}")
+        logger.error(f"File not found: {file_path}")
         return None
 
     with open(file_path, "r", encoding="utf-8") as f:
@@ -32,7 +42,7 @@ def parse_activity_html(file_path):
 
             # Transaction ID and Status
             txn_id = None
-            status = "Pending" # Default if not found
+            status = "Pending"  # Default if not found
             for line in lines:
                 if line.startswith("Details:"):
                     txn_id = line.replace("Details:", "").strip()
@@ -42,7 +52,7 @@ def parse_activity_html(file_path):
             transactions.append([cleaned_timestamp, txn_type, merchant, amount, txn_id, status])
 
         except Exception as e:
-            print("Skipping block due to error:", e)
+            logger.warning(f"Skipping block due to error: {e}")
 
     df = pd.DataFrame(
         transactions,
@@ -63,15 +73,17 @@ def run_parse_flow():
     input_file = os.path.join(settings.RAW_DATA_PATH, "My Activity.html")
     output_file = os.path.join(settings.PROCESSED_DATA_PATH, "transactions.csv")
     
-    print(f"Starting parsing: {input_file}")
+    logger.info(f"Starting parsing: {input_file}")
     df = parse_activity_html(input_file)
     
     if df is not None:
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         df.to_csv(output_file, index=False)
-        print(f"Successfully saved {len(df)} transactions to {output_file}")
+        logger.info(f"Successfully saved {len(df)} transactions to {output_file}")
     else:
-        print("Parsing failed.")
+        logger.error("Parsing failed.")
 
 if __name__ == "__main__":
+    from config.settings import setup_logging
+    setup_logging()
     run_parse_flow()
