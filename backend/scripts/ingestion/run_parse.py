@@ -5,12 +5,12 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 # Ensure the root directory is in the path if run directly
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if ROOT_DIR not in sys.path:
     sys.path.append(ROOT_DIR)
 
-from config import settings
-from src.utils.cleaning import normalize_timestamp, extract_merchant_and_type, parse_amount
+from app.core import settings
+from app.utils.cleaning import normalize_timestamp, extract_merchant_and_type, parse_amount
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +84,6 @@ def run_parse_flow():
         logger.error("Parsing failed.")
 
 if __name__ == "__main__":
-    from config.settings import setup_logging
+    from app.core.settings import setup_logging
     setup_logging()
     run_parse_flow()

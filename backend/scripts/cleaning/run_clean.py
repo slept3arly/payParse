@@ -4,11 +4,11 @@ import logging
 import pandas as pd
 
 # Ensure the root directory is in the path if run directly
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if ROOT_DIR not in sys.path:
     sys.path.append(ROOT_DIR)
 
-from config import settings
+from app.core import settings
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,6 @@ def run_clean_flow():
     logger.info(f"Saved cleaned data to {output_file} with {len(df_cleaned)} rows.")
 
 if __name__ == "__main__":
-    from config.settings import setup_logging
+    from app.core.settings import setup_logging
     setup_logging()
     run_clean_flow()

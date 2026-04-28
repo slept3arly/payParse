@@ -1,15 +1,17 @@
 import os
+import sys
 import shutil
 import logging
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from config.settings import setup_logging, RAW_DATA_PATH, PROCESSED_DATA_PATH
 import pandas as pd
 
-# Import our processing flows
-from scripts.run_parse import run_parse_flow
-from scripts.run_clean import run_clean_flow
-from scripts.run_analyze import run_enrichment_flow
+BACKEND_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if BACKEND_ROOT not in sys.path:
+    sys.path.append(BACKEND_ROOT)
+
+from app.core.settings import setup_logging, RAW_DATA_PATH, PROCESSED_DATA_PATH
+from app.services.pipeline_service import run_full_pipeline
 
 # Initialize logging
 setup_logging()
@@ -53,15 +55,7 @@ async def process_data():
     """Trigger the full processing pipeline."""
     try:
         logger.info("Starting pipeline execution via API...")
-        
-        # Step 1: Parse
-        run_parse_flow()
-        
-        # Step 2: Clean
-        run_clean_flow()
-        
-        # Step 3: Analyze (Enrich)
-        run_enrichment_flow()
+        run_full_pipeline()
         
         logger.info("Pipeline execution completed successfully.")
         return {"message": "Processing completed successfully"}

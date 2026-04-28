@@ -4,12 +4,12 @@ import logging
 import pandas as pd
 
 # Ensure the root directory is in the path if run directly
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if ROOT_DIR not in sys.path:
     sys.path.append(ROOT_DIR)
 
-from config import settings
-from src.utils.google_maps import query_google_places, score_match, map_types_to_category
+from app.core import settings
+from app.utils.google_maps import query_google_places, score_match, map_types_to_category
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +92,6 @@ def run_enrichment_flow():
     logger.info(f"Enriched data saved to {output_file}")
 
 if __name__ == "__main__":
-    from config.settings import setup_logging
+    from app.core.settings import setup_logging
     setup_logging()
     run_enrichment_flow()

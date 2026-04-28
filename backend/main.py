@@ -5,10 +5,10 @@ import os
 # Ensure the root directory is in the path for modular imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from config.settings import setup_logging
-from scripts.run_parse import run_parse_flow
-from scripts.run_clean import run_clean_flow
-from scripts.run_analyze import run_enrichment_flow
+from app.core.settings import setup_logging
+from scripts.ingestion.run_parse import run_parse_flow
+from scripts.cleaning.run_clean import run_clean_flow
+from scripts.analysis.run_analyze import run_enrichment_flow
 
 # Initialize logging
 setup_logging()
